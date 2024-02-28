@@ -1,15 +1,12 @@
-FROM node:16.15.0-alpine AS base
+FROM node AS base
 
 WORKDIR /project
 
-FROM base AS dependencies
-
-RUN yarn global add typescript
 COPY tsconfig.json .
 COPY package.json .
-COPY yarn.lock .
-RUN yarn install --pure-lockfile --non-interactive --cache-folder ./ycache; rm -rf ./ycache
+COPY package-lock.json .
+RUN npm install
 COPY src/ src/
-RUN yarn build
+RUN npm run build
 
-ENTRYPOINT [ "yarn", "start" ]
+ENTRYPOINT [ "npm", "start" ]
